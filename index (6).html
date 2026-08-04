@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Yo'nalish Kompas — Registon O'quv Markazi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root{
+    --ink:#1B1B1F;
+    --paper:#FFFBF7;
+    --orange:#EA580C;
+    --orange-deep:#C2410C;
+    --navy:#16213E;
+    --line:#EEE3D8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .font-display{font-family:'Manrope',sans-serif;}
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  /* compass signature element */
+  .compass{
+    width:180px;height:180px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, #fff, #FBEFE3 70%);
+    border:2px solid var(--line);
+    position:relative;
+    box-shadow:0 20px 40px -20px rgba(194,65,12,0.35);
+  }
+  .compass::before{
+    content:'';position:absolute;inset:14px;border-radius:50%;
+    border:1px dashed #E4C9AC;
+  }
+  .needle{
+    position:absolute;left:50%;top:50%;width:6px;height:78px;
+    background:linear-gradient(to top, var(--navy) 50%, var(--orange) 50%);
+    transform-origin:50% 50%;
+    transform:translate(-50%,-50%) rotate(0deg);
+    border-radius:4px;
+    transition:transform 2.4s cubic-bezier(.2,.9,.15,1.05);
+  }
+  .needle::after{
+    content:'';position:absolute;left:50%;top:50%;width:14px;height:14px;
+    background:var(--orange-deep);border-radius:50%;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 0 4px #fff;
+  }
+  .compass .tick{position:absolute;left:50%;top:50%;width:1px;height:90px;background:#E4C9AC;transform-origin:top;}
+
+  .progress-track{background:#F0E4D6;}
+  .progress-fill{background:linear-gradient(90deg,var(--orange),var(--orange-deep));transition:width .4s ease;}
+
+  .opt-btn{
+    border:1.5px solid var(--line);
+    transition:all .15s ease;
+  }
+  .opt-btn:hover{border-color:var(--orange);background:#FFF6EE;}
+  .opt-btn:active{transform:scale(0.99);}
+
+  .cat-chip{border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;letter-spacing:.02em;}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  .fade-up{animation:fadeUp .5s ease both;}
+</style>
+</head>
+<body class="min-h-screen">
+
+<div class="max-w-md mx-auto min-h-screen relative">
+
+  <!-- Header -->
+  <header class="px-6 pt-6 pb-3 flex items-center justify-between">
+    <div class="font-display font-800 text-lg tracking-tight" style="color:var(--navy)">
+      REGISTON<span style="color:var(--orange)">.</span>
+    </div>
+    <div class="text-xs font-medium text-neutral-400" id="header-tag">Yo'nalish Kompas</div>
+  </header>
+
+  <!-- SCREEN 1: WELCOME -->
+  <section id="screen-welcome" class="screen active px-6 pb-10">
+    <div class="mt-4 mb-8 fade-up">
+      <div class="compass mx-auto mb-8" id="welcome-compass">
+        <div class="tick" style="transform:translate(-50%,-100%) rotate(0deg);"></div>
+        <div class="tick" style="transform:translate(-50%,-100%) rotate(90deg);"></div>
+        <div class="tick" style="transform:translate(-50%,-100%) rotate(180deg);"></div>
+        <div class="tick" style="transform:translate(-50%,-100%) rotate(270deg);"></div>
+        <div class="needle" id="welcome-needle" style="transform:translate(-50%,-50%) rotate(35deg);"></div>
+      </div>
+      <h1 class="font-display font-800 text-3xl leading-tight text-center" style="color:var(--navy)">
+        O'zingizga mos <span style="color:var(--orange)">yo'nalishni</span> toping
+      </h1>
+      <p class="text-center text-neutral-500 mt-4 leading-relaxed">
+        10 ta qiziqarli savolga javob bering — qiziqishlaringiz va fikrlash uslubingizga qarab, sizga qaysi ta'lim yo'nalishi va kelajakdagi kasblar mos kelishini aniqlaymiz.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-3 gap-2 mb-8 text-center">
+      <div class="fade-up" style="animation-delay:.05s">
+        <div class="text-2xl font-display font-800" style="color:var(--orange)">10</div>
+        <div class="text-[11px] text-neutral-400 mt-1">savol</div>
+      </div>
+      <div class="fade-up" style="animation-delay:.1s">
+        <div class="text-2xl font-display font-800" style="color:var(--orange)">3</div>
+        <div class="text-[11px] text-neutral-400 mt-1">daqiqa</div>
+      </div>
+      <div class="fade-up" style="animation-delay:.15s">
+        <div class="text-2xl font-display font-800" style="color:var(--orange)">6</div>
+        <div class="text-[11px] text-neutral-400 mt-1">yo'nalish</div>
+      </div>
+    </div>
+
+    <button onclick="startQuiz()" class="w-full py-4 rounded-2xl font-display font-700 text-white text-base" style="background:var(--orange);box-shadow:0 12px 24px -10px rgba(234,88,12,.55)">
+      Testni boshlash →
+    </button>
+    <p class="text-center text-[11px] text-neutral-400 mt-4">Registon O'quv Markazi tomonidan tayyorlandi</p>
+  </section>
+
+  <!-- SCREEN 2: QUIZ -->
+  <section id="screen-quiz" class="screen px-6 pb-10">
+    <div class="flex items-center justify-between mb-2 mt-2">
+      <span class="text-xs font-semibold text-neutral-400" id="q-counter">1 / 10</span>
+      <span class="text-xs font-semibold" style="color:var(--orange)" id="q-percent">10%</span>
+    </div>
+    <div class="progress-track h-2 rounded-full overflow-hidden mb-8">
+      <div class="progress-fill h-full rounded-full" id="progress-bar" style="width:10%"></div>
+    </div>
+
+    <div id="question-wrap" class="fade-up">
+      <h2 class="font-display font-700 text-xl leading-snug mb-6" style="color:var(--navy)" id="q-text"></h2>
+      <div id="q-options" class="flex flex-col gap-3"></div>
+    </div>
+  </section>
+
+  <!-- SCREEN 3: LEAD FORM -->
+  <section id="screen-lead" class="screen px-6 pb-10">
+    <div class="mt-6 mb-6 text-center fade-up">
+      <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style="background:#FFF1E4">
+        <span class="text-2xl">🎯</span>
+      </div>
+      <h2 class="font-display font-800 text-2xl" style="color:var(--navy)">Deyarli tayyor!</h2>
+      <p class="text-neutral-500 mt-2 leading-relaxed">Natijangizni ko'rish uchun ma'lumotlaringizni qoldiring — Registon mutaxassisi siz bilan bog'lanib, yo'nalish bo'yicha bepul konsultatsiya beradi.</p>
+    </div>
+
+    <div class="flex flex-col gap-3 fade-up" style="animation-delay:.1s">
+      <div>
+        <label class="text-xs font-semibold text-neutral-500 mb-1 block">Ismingiz</label>
+        <input id="lead-name" type="text" placeholder="Ismingizni kiriting" class="w-full px-4 py-3 rounded-xl border outline-none" style="border-color:var(--line)">
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-neutral-500 mb-1 block">Telefon raqamingiz</label>
+        <input id="lead-phone" type="tel" placeholder="+998 90 123 45 67" class="w-full px-4 py-3 rounded-xl border outline-none" style="border-color:var(--line)">
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-neutral-500 mb-1 block">Nechanchi sinf o'quvchisisiz? (ixtiyoriy)</label>
+        <input id="lead-grade" type="text" placeholder="Masalan: 9-sinf" class="w-full px-4 py-3 rounded-xl border outline-none" style="border-color:var(--line)">
+      </div>
+      <p id="lead-error" class="text-xs text-red-500 hidden">Iltimos, ism va telefon raqamingizni kiriting.</p>
+      <button onclick="submitLead()" id="lead-submit-btn" class="w-full py-4 rounded-2xl font-display font-700 text-white text-base mt-2" style="background:var(--orange);box-shadow:0 12px 24px -10px rgba(234,88,12,.55)">
+        Natijamni ko'rish →
+      </button>
+      <button onclick="backToLastQuestion()" class="text-center text-xs text-neutral-400 underline">Orqaga qaytish</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 4: RESULTS -->
+  <section id="screen-result" class="screen px-6 pb-12">
+    <div class="mt-4 mb-6 text-center">
+      <div class="compass mx-auto mb-6" id="result-compass">
+        <div class="tick" style="transform:translate(-50%,-100%) rotate(0deg);"></div>
+        <div class="tick" style="transform:translate(-50%,-100%) rotate(90deg);"></div>
+        <div class="tick" style="transform:translate(-50%,-100%) rotate(180deg);"></div>
+        <div class="tick" style="transform:translate(-50%,-100%) rotate(270deg);"></div>
+        <div class="needle" id="result-needle"></div>
+      </div>
+      <div class="cat-chip inline-block mb-3" id="result-chip" style="background:#FFF1E4;color:var(--orange-deep)">SIZNING YO'NALISHINGIZ</div>
+      <h2 class="font-display font-800 text-2xl leading-tight" style="color:var(--navy)" id="result-title"></h2>
+      <p class="text-neutral-500 mt-3 leading-relaxed" id="result-desc"></p>
+    </div>
+
+    <div class="rounded-2xl p-5 mb-4" style="background:#FBF6F0;border:1px solid var(--line)">
+      <div class="text-xs font-semibold text-neutral-400 mb-2">MOS KASBLAR</div>
+      <div id="result-jobs" class="flex flex-wrap gap-2"></div>
+    </div>
+
+    <div class="rounded-2xl p-5 mb-6" style="background:#FBF6F0;border:1px solid var(--line)">
+      <div class="text-xs font-semibold text-neutral-400 mb-2">REGISTONDA TAVSIYA ETILGAN FANLAR</div>
+      <div id="result-courses" class="flex flex-wrap gap-2"></div>
+    </div>
+
+    <a href="https://t.me/registon_official" target="_blank" class="w-full block text-center py-4 rounded-2xl font-display font-700 text-white text-base mb-3" style="background:var(--orange);box-shadow:0 12px 24px -10px rgba(234,88,12,.55)">
+      Bepul konsultatsiyaga yozilish
+    </a>
+    <button onclick="restartQuiz()" class="w-full py-3 rounded-2xl font-display font-700 text-sm" style="border:1.5px solid var(--line);color:var(--navy)">
+      Testni qayta topshirish
+    </button>
+    <p class="text-center text-[11px] text-neutral-400 mt-6">© Registon O'quv Markazi</p>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================
+   TELEGRAM BOT SOZLAMALARI
+   Quyidagi ikkita qiymatni o'zingizning bot ma'lumotlaringiz bilan almashtiring.
+   BOT_TOKEN -> @BotFather orqali olingan token
+   CHAT_ID   -> lidlar tushadigan guruh/kanal yoki shaxsiy chat ID
+========================================================= */
+const BOT_TOKEN = "YOUR_BOT_TOKEN_HERE";
+const CHAT_ID = "YOUR_CHAT_ID_HERE";
+
+/* Categories: 0 IT, 1 Tabiat, 2 Til, 3 Ijtimoiy, 4 Iqtisod, 5 Ijod */
+const CATEGORIES = [
+  {
+    key:"it",
+    title:"Aniq fanlar va IT yo'nalishi",
+    color:"#2563EB",
+    desc:"Siz mantiqiy fikrlaydigan, texnologiyalarga qiziquvchi va aniq yechimlarni yoqtiradigan insonsiz. Raqamlar, algoritmlar va zamonaviy vositalar bilan ishlash sizga yoqadi.",
+    jobs:["Dasturchi","Muhandis","Data Analyst","Kiberxavfsizlik mutaxassisi"],
+    courses:["Matematika","Fizika","Dasturlash/IT"],
+    angle:-60
+  },
+  {
+    key:"tabiat",
+    title:"Tabiiy fanlar va tibbiyot yo'nalishi",
+    color:"#16A34A",
+    desc:"Siz kuzatuvchan, sabr-toqatli va tabiat sirlariga qiziquvchi insonsiz. Tajriba o'tkazish, tadqiq qilish va boshqalarga yordam berish sizni ilhomlantiradi.",
+    jobs:["Shifokor","Farmatsevt","Biolog","Stomatolog"],
+    courses:["Biologiya","Kimyo"],
+    angle:-20
+  },
+  {
+    key:"til",
+    title:"Til va xalqaro aloqalar yo'nalishi",
+    color:"#7C3AED",
+    desc:"Siz kommunikabelli, boshqa madaniyatlarga qiziquvchi va tillarni tez o'zlashtiradigan insonsiz. Xalqaro muhitda ishlash sizga juda mos keladi.",
+    jobs:["Tarjimon","Gid-tarjimon","Diplomat","Xalqaro menejer"],
+    courses:["Ingliz tili","Rus tili"],
+    angle:20
+  },
+  {
+    key:"ijtimoiy",
+    title:"Ijtimoiy-gumanitar yo'nalish",
+    color:"#DC2626",
+    desc:"Siz adolatga, jamiyat muammolariga va inson huquqlariga befarq bo'lmagan insonsiz. So'z bilan ta'sir qilish va odamlarga yordam berish sizning kuchli tomoningiz.",
+    jobs:["Huquqshunos","Jurnalist","O'qituvchi","Psixolog"],
+    courses:["Tarix","Ona tili va adabiyot","Huquq asoslari"],
+    angle:60
+  },
+  {
+    key:"iqtisod",
+    title:"Iqtisodiyot va boshqaruv yo'nalishi",
+    color:"#D97706",
+    desc:"Siz tashabbuskor, raqamlar bilan ishlashni yoqtiradigan va strategik fikrlaydigan insonsiz. Biznes va moliya olamida rivojlanish sizga mos.",
+    jobs:["Iqtisodchi","Menejer","Moliyachi","Tadbirkor"],
+    courses:["Matematika","Iqtisodiyot asoslari"],
+    angle:100
+  },
+  {
+    key:"ijod",
+    title:"Ijodkorlik va dizayn yo'nalishi",
+    color:"#DB2777",
+    desc:"Siz original fikrlaydigan, vizual go'zallikka e'tiborli va o'z g'oyalarini shakl orqali ifodalashni yoqtiradigan insonsiz. Ijod sizning tabiiy kuchingiz.",
+    jobs:["Dizayner","Arxitektor","Kontent yaratuvchi","Rassom"],
+    courses:["Chizmachilik","San'at va dizayn asoslari"],
+    angle:150
+  }
+];
+
+const QUESTIONS = [
+  {
+    text:"Bo'sh vaqtingizda nima qilishni ko'proq yoqtirasiz?",
+    options:[
+      {label:"Kompyuter o'yinlari yoki ilovalar bilan shug'ullanish", points:[2,0,0,0,0,0]},
+      {label:"Tabiatga chiqish, o'simlik va hayvonlarni kuzatish", points:[0,2,0,0,0,0]},
+      {label:"Kitob o'qish, chet tilida kino ko'rish", points:[0,0,2,0,0,0]},
+      {label:"Yangiliklar va munozarali mavzularni kuzatish", points:[0,0,0,2,0,0]},
+      {label:"Rasm chizish, musiqa yoki boshqa ijodiy ish", points:[0,0,0,0,0,2]}
+    ]
+  },
+  {
+    text:"Maktabda qaysi fanlar sizga osonroq va qiziqarliroq?",
+    options:[
+      {label:"Matematika, fizika", points:[2,0,0,0,1,0]},
+      {label:"Biologiya, kimyo", points:[0,2,0,0,0,0]},
+      {label:"Ingliz yoki rus tili", points:[0,0,2,0,0,0]},
+      {label:"Tarix, adabiyot, huquq", points:[0,0,0,2,0,0]},
+      {label:"Chizmachilik, tasviriy san'at", points:[0,0,0,0,0,2]}
+    ]
+  },
+  {
+    text:"Biror muammoni hal qilishda qanday yo'l tutasiz?",
+    options:[
+      {label:"Mantiqiy tahlil qilib, formula yoki algoritm asosida", points:[2,0,0,0,0,0]},
+      {label:"Tajriba o'tkazib, kuzatib, sinab ko'rib", points:[0,2,0,0,0,0]},
+      {label:"Boshqalar bilan gaplashib, fikr almashib", points:[0,0,1,1,0,0]},
+      {label:"Raqamlar va statistikaga tayanib", points:[0,0,0,0,2,0]},
+      {label:"Yangi, original yechim o'ylab topib", points:[0,0,0,0,0,2]}
+    ]
+  },
+  {
+    text:"Guruh loyihasida qaysi rolni afzal ko'rasiz?",
+    options:[
+      {label:"Texnik qism — dastur yoki tizim yaratish", points:[2,0,0,0,0,0]},
+      {label:"Tadqiqotchi — ma'lumot yig'ish va tahlil qilish", points:[0,1,0,0,1,0]},
+      {label:"Taqdimotchi — so'zlab berish yoki tarjima qilish", points:[0,0,2,0,0,0]},
+      {label:"Yetakchi — jamoani boshqarish va qaror qabul qilish", points:[0,0,0,1,1,0]},
+      {label:"Dizayner — vizual ko'rinishni yaratish", points:[0,0,0,0,0,2]}
+    ]
+  },
+  {
+    text:"Kelajakda qanday muhitda ishlashni orzu qilasiz?",
+    options:[
+      {label:"Zamonaviy ofis, kompyuter va texnologiyalar bilan", points:[2,0,0,0,0,0]},
+      {label:"Laboratoriya yoki klinika", points:[0,2,0,0,0,0]},
+      {label:"Xalqaro kompaniya, chet elliklar bilan muloqotda", points:[0,0,2,0,0,0]},
+      {label:"Sud, davlat idorasi yoki media", points:[0,0,0,2,0,0]},
+      {label:"Biznes muhiti, savdo va bozor", points:[0,0,0,0,2,0]},
+      {label:"Ijodiy studiya yoki agentlik", points:[0,0,0,0,0,2]}
+    ]
+  },
+  {
+    text:"Sizni ko'proq nima qiziqtiradi?",
+    options:[
+      {label:"Yangi texnologiyalar va ilovalar", points:[2,0,0,0,0,0]},
+      {label:"Inson tanasi va tabiat sirlari", points:[0,2,0,0,0,0]},
+      {label:"Boshqa mamlakatlar madaniyati", points:[0,0,2,0,0,0]},
+      {label:"Jamiyat, qonunlar va adolat masalalari", points:[0,0,0,2,0,0]},
+      {label:"Pul, biznes va investitsiyalar", points:[0,0,0,0,2,0]},
+      {label:"San'at, moda va dizayn", points:[0,0,0,0,0,2]}
+    ]
+  },
+  {
+    text:"Do'stlaringiz sizni ko'proq qanday inson deb bilishadi?",
+    options:[
+      {label:"Texnik fikrlaydigan, \"texnolog\"", points:[1,0,0,0,0,0]},
+      {label:"Tinch va kuzatuvchan", points:[0,1,0,0,0,0]},
+      {label:"Kommunikabelli, tilga usta", points:[0,0,1,0,0,0]},
+      {label:"Adolatli, bahslashishni yaxshi ko'radigan", points:[0,0,0,1,0,0]},
+      {label:"Tashabbuskor, tadbirkor ruhli", points:[0,0,0,0,1,0]},
+      {label:"Ijodkor, g'ayrioddiy fikrlaydigan", points:[0,0,0,0,0,1]}
+    ]
+  },
+  {
+    text:"Kelajakda qaysi kasb sizga ko'proq yoqadi (tasavvur qiling)?",
+    options:[
+      {label:"Dasturchi yoki muhandis", points:[2,0,0,0,0,0]},
+      {label:"Shifokor yoki biolog", points:[0,2,0,0,0,0]},
+      {label:"Tarjimon yoki gid", points:[0,0,2,0,0,0]},
+      {label:"Advokat, jurnalist yoki o'qituvchi", points:[0,0,0,2,0,0]},
+      {label:"Tadbirkor yoki moliyachi", points:[0,0,0,0,2,0]},
+      {label:"Dizayner yoki arxitektor", points:[0,0,0,0,0,2]}
+    ]
+  },
+  {
+    text:"Qanday topshiriqlar sizni ko'proq qiziqtiradi?",
+    options:[
+      {label:"Aniq va to'g'ri javobi bo'lgan masalalar", points:[1,0,0,0,1,0]},
+      {label:"Kuzatish va tajriba talab qiladigan topshiriqlar", points:[0,2,0,0,0,0]},
+      {label:"Insho yazish yoki matn bilan ishlash", points:[0,0,1,1,0,0]},
+      {label:"Erkin va ijodiy topshiriqlar", points:[0,0,0,0,0,2]}
+    ]
+  },
+  {
+    text:"Kelajakda qaysi natijaga erishishni xohlaysiz?",
+    options:[
+      {label:"Innovatsion mahsulot yoki dastur yaratish", points:[1,0,0,0,0,1]},
+      {label:"Odamlarni davolash yoki tabiatni asrash", points:[0,2,0,0,0,0]},
+      {label:"Dunyo bo'ylab sayohat qilish va muloqot", points:[0,0,2,0,0,0]},
+      {label:"Jamiyatga foyda keltiradigan ish qilish", points:[0,0,0,2,0,0]},
+      {label:"Muvaffaqiyatli biznes qurish", points:[0,0,0,0,2,0]}
+    ]
+  }
+];
+
+let currentQ = 0;
+let scores = [0,0,0,0,0,0];
+let resultCategory = null;
+
+function backToLastQuestion(){
+  if(currentQ > 0){ currentQ--; }
+  document.getElementById('screen-lead').style.display='none';
+  document.getElementById('screen-quiz').style.display='block';
+  renderQuestion();
+}
+
+function startQuiz(){
+  currentQ = 0;
+  scores = [0,0,0,0,0,0];
+  document.getElementById('screen-welcome').style.display='none';
+  document.getElementById('screen-quiz').style.display='block';
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = QUESTIONS[currentQ];
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('q-counter').textContent = (currentQ+1) + ' / ' + QUESTIONS.length;
+  const pct = Math.round(((currentQ+1)/QUESTIONS.length)*100);
+  document.getElementById('q-percent').textContent = pct + '%';
+  document.getElementById('progress-bar').style.width = pct + '%';
+
+  const wrap = document.getElementById('q-options');
+  wrap.innerHTML = '';
+  q.options.forEach(function(opt, idx){
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn text-left px-5 py-4 rounded-2xl bg-white';
+    btn.innerHTML = '<span class="text-[15px] leading-snug" style="color:#1B1B1F">' + opt.label + '</span>';
+    btn.setAttribute('onclick', 'selectOption(' + idx + ')');
+    wrap.appendChild(btn);
+  });
+
+  const qw = document.getElementById('question-wrap');
+  qw.classList.remove('fade-up');
+  void qw.offsetWidth;
+  qw.classList.add('fade-up');
+}
+
+function selectOption(idx){
+  const opt = QUESTIONS[currentQ].options[idx];
+  for(let i=0;i<6;i++){ scores[i] += opt.points[i]; }
+  currentQ++;
+  if(currentQ < QUESTIONS.length){
+    renderQuestion();
+  } else {
+    document.getElementById('screen-quiz').style.display='none';
+    document.getElementById('screen-lead').style.display='block';
+  }
+}
+
+function computeResult(){
+  let bestIdx = 0;
+  for(let i=1;i<scores.length;i++){
+    if(scores[i] > scores[bestIdx]) bestIdx = i;
+  }
+  resultCategory = CATEGORIES[bestIdx];
+}
+
+function renderResult(){
+  computeResult();
+  document.getElementById('result-title').textContent = resultCategory.title;
+  document.getElementById('result-desc').textContent = resultCategory.desc;
+  document.getElementById('result-chip').style.color = resultCategory.color;
+
+  const jobsWrap = document.getElementById('result-jobs');
+  jobsWrap.innerHTML = '';
+  resultCategory.jobs.forEach(function(j){
+    const chip = document.createElement('span');
+    chip.className = 'cat-chip';
+    chip.style.background = '#fff';
+    chip.style.border = '1px solid ' + resultCategory.color;
+    chip.style.color = resultCategory.color;
+    chip.textContent = j;
+    jobsWrap.appendChild(chip);
+  });
+
+  const coursesWrap = document.getElementById('result-courses');
+  coursesWrap.innerHTML = '';
+  resultCategory.courses.forEach(function(c){
+    const chip = document.createElement('span');
+    chip.className = 'cat-chip';
+    chip.style.background = '#FFF1E4';
+    chip.style.color = 'var(--orange-deep)';
+    chip.textContent = c;
+    coursesWrap.appendChild(chip);
+  });
+
+  const needle = document.getElementById('result-needle');
+  needle.style.transform = 'translate(-50%,-50%) rotate(0deg)';
+  void needle.offsetWidth;
+  setTimeout(function(){
+    needle.style.transform = 'translate(-50%,-50%) rotate(' + resultCategory.angle + 'deg)';
+  }, 100);
+}
+
+function showResult(){
+  document.getElementById('screen-lead').style.display = 'none';
+  document.getElementById('screen-result').style.display = 'block';
+  renderResult();
+}
+
+function submitLead(){
+  const name = document.getElementById('lead-name').value.trim();
+  const phone = document.getElementById('lead-phone').value.trim();
+  const grade = document.getElementById('lead-grade').value.trim();
+  const errorEl = document.getElementById('lead-error');
+
+  if(!name || !phone){
+    errorEl.classList.remove('hidden');
+    return;
+  }
+  errorEl.classList.add('hidden');
+
+  computeResult();
+
+  // Show result immediately so the user never gets blocked by a Telegram API failure
+  showResult();
+
+  // Send lead to Telegram in the background
+  const text = "🎯 Yangi test natijasi (Yo'nalish Kompas)\n\n" +
+    "👤 Ism: " + name + "\n" +
+    "📞 Telefon: " + phone + "\n" +
+    (grade ? ("🎓 Sinf: " + grade + "\n") : "") +
+    "🧭 Tavsiya etilgan yo'nalish: " + resultCategory.title;
+
+  try {
+    const url = "https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage";
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(JSON.stringify({ chat_id: CHAT_ID, text: text }));
+  } catch(e) {
+    // Silently ignore — result screen is already shown to the user
+  }
+}
+
+function restartQuiz(){
+  document.getElementById('screen-result').style.display='none';
+  document.getElementById('screen-welcome').style.display='block';
+  document.getElementById('lead-name').value='';
+  document.getElementById('lead-phone').value='';
+  document.getElementById('lead-grade').value='';
+}
+</script>
+</body>
+</html>
